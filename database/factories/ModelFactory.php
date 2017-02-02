@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 $factory->define(App\User::class, function (Faker\Generator $faker) {
 
     return [
-        'code' => $faker->numberBetween(3500000,3700000),
+        'username' => $faker->numberBetween(3500000,3700000),
         'nom' => $faker->lastName,
         'prenom' => $faker->firstName,
         'password' => Hash::make('secret'),

@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'code', 'nom', 'prenom',
+        'username', 'nom', 'prenom',
     ];
 
     /**
@@ -34,11 +34,29 @@ class User extends Authenticatable
     /**
      * Automatically creates hash for the user password.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return void
      */
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    public static function createUserFromLDAP(\Adldap\Models\User $ldapUser, array $credentials): User
+    {
+        $nomPrenom = explode(' ', $ldapUser->getCommonName());
+        $user = new User();
+        $user->username = $credentials['username'];
+        $user->setPasswordAttribute($credentials['password']);
+        $user->nom = last($nomPrenom);
+        $user->prenom = head($nomPrenom);
+        $user->save();
+
+        if (is_numeric($credentials['username']))
+            $user->attachRole(Role::where('name','student')->firstOrFail());
+        else
+            $user->attachRole(Role::where('name','teacher')->firstOrFail());
+
+        return $user;
     }
 }

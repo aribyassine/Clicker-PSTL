@@ -129,21 +129,15 @@ class AuthenticateController extends Controller
     public function authenticate(LoginRequest $request, \Tymon\JWTAuth\JWTAuth $auth)
     {
         // grab credentials from the request
-        $credentials = $request->only('code', 'password');
+        $credentials = $request->only('username', 'password');
         try {
             // attempt to verify the credentials and create a token for the user
             if (!$token = $auth->attempt($credentials)) {
-                if (Adldap::auth()->attempt($credentials['code'], $credentials['password'])) {
+                if (Adldap::auth()->attempt($credentials['username'], $credentials['password'])) {
 
-                    $aldapUser = Adldap::search()->whereEquals('uid', $credentials['code'])->firstOrFail();
-                    $nomPrenom = explode(' ', $aldapUser->cn[0]);
+                    $ldapUser = Adldap::search()->whereEquals('uid', $credentials['username'])->firstOrFail();
 
-                    $user = new User();
-                    $user->code = $credentials['code'];
-                    $user->setPasswordAttribute($credentials['password']);
-                    $user->nom = last($nomPrenom);
-                    $user->prenom = head($nomPrenom);
-                    $user->save();
+                    $user = User::createUserFromLDAP($ldapUser,$credentials);
 
                     if (!$token = $auth->attempt($credentials))
                         return $this->response()->errorUnauthorized('invalide credentials');
