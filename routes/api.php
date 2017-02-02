@@ -6,13 +6,10 @@ use Dingo\Api\Routing\Router;
 $api = app(Router::class);
 
 $api->version('v1', function (Router $api) {
-    $api->group(['prefix' => 'auth'], function(Router $api) {
-        $api->post('signup', 'App\\Api\\V1\\Controllers\\SignUpController@signUp');
-        $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
 
-        $api->post('recovery', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@sendResetEmail');
-        $api->post('reset', 'App\\Api\\V1\\Controllers\\ResetPasswordController@resetPassword');
-    });
+    $api->post('/authenticate', 'App\Http\Controllers\AuthenticateController@authenticate');
+    $api->get('/token', 'App\Http\Controllers\AuthenticateController@getToken');
+    $api->post('/logout', 'App\Http\Controllers\AuthenticateController@logout');
 
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
         $api->get('protected', function() {
@@ -20,6 +17,8 @@ $api->version('v1', function (Router $api) {
                 'message' => 'Access to this item is only for authenticated user. Provide a token in your request!'
             ]);
         });
+
+        $api->get('/authenticated_user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
 
         $api->get('refresh', [
             'middleware' => 'jwt.refresh',
