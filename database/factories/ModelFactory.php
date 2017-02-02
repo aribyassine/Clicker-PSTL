@@ -18,8 +18,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
     return [
         'username' => $faker->numberBetween(3500000,3700000),
-        'nom' => $faker->lastName,
-        'prenom' => $faker->firstName,
-        'password' => Hash::make('secret'),
+        'lastName' => $faker->lastName,
+        'firstName' => $faker->firstName,
+        'password' => Hash::make('password'),
     ];
 });

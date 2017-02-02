@@ -3,7 +3,6 @@
 namespace App;
 
 use Hash;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 
@@ -17,18 +16,14 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'username', 'nom', 'prenom',
-    ];
+    protected $fillable = ['username', 'firstName', 'lastName'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-        'password'
-    ];
+    protected $hidden = ['password'];
 
 
     /**
@@ -44,18 +39,18 @@ class User extends Authenticatable
 
     public static function createUserFromLDAP(\Adldap\Models\User $ldapUser, array $credentials): User
     {
-        $nomPrenom = explode(' ', $ldapUser->getCommonName());
+        $name = explode(' ', $ldapUser->getCommonName());
         $user = new User();
         $user->username = $credentials['username'];
         $user->setPasswordAttribute($credentials['password']);
-        $user->nom = last($nomPrenom);
-        $user->prenom = head($nomPrenom);
+        $user->lastName = last($name);
+        $user->firstName = head($name);
         $user->save();
 
         if (is_numeric($credentials['username']))
-            $user->attachRole(Role::where('name','student')->firstOrFail());
+            $user->attachRole(Role::where('name', 'student')->firstOrFail());
         else
-            $user->attachRole(Role::where('name','teacher')->firstOrFail());
+            $user->attachRole(Role::where('name', 'teacher')->firstOrFail());
 
         return $user;
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Role;
+use App\User;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -14,8 +15,9 @@ class UsersTableSeeder extends Seeder
     {
         for ($i = 0; $i < 5; $i++){
             $user = factory(App\User::class)->make();
+            $user->setPasswordAttribute('password');
             $user->save();
-            $user->attachRole(Role::where('name','teacher')->firstOrFail());
+            $user->attachRole(Role::where('name','student')->firstOrFail());
         }
     }
 }
