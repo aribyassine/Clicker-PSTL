@@ -11,7 +11,8 @@
         "dingo/api": "1.0.x@dev",
         "barryvdh/laravel-cors": "^0.8.2",
         "adldap2/adldap2-laravel": "2.1.*",
-        "zizaco/entrust": "5.2.x-dev"
+        "zizaco/entrust": "5.2.x-dev",
+        "predis/predis": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

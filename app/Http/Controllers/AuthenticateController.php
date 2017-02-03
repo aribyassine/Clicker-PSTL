@@ -7,7 +7,6 @@ use App\Requests\LoginRequest;
 use App\User;
 use Dingo\Api\Exception\ResourceException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;

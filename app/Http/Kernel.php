@@ -2,9 +2,12 @@
 
 namespace App\Http;
 
-use Tymon\JWTAuth\Middleware\RefreshToken;
-use Tymon\JWTAuth\Middleware\GetUserFromToken;
+use App\Http\Middleware\GetUserFromToken;
+use App\Http\Middleware\RefreshToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Zizaco\Entrust\Middleware\EntrustAbility;
+use Zizaco\Entrust\Middleware\EntrustPermission;
+use Zizaco\Entrust\Middleware\EntrustRole;
 
 class Kernel extends HttpKernel
 {
@@ -58,8 +61,8 @@ class Kernel extends HttpKernel
         'jwt.auth' => GetUserFromToken::class,
         'jwt.refresh' => RefreshToken::class,
 
-        'role' => \Zizaco\Entrust\Middleware\EntrustRole::class,
-        'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
-        'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
+        'role' => EntrustRole::class,
+        'permission' => EntrustPermission::class,
+        'ability' => EntrustAbility::class,
     );
 }
