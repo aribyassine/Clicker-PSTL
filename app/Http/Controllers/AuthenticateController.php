@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Adldap\Laravel\Facades\Adldap;
 use App\Http\Requests;
 use App\Requests\LoginRequest;
+use App\Transformers\UserTransformer;
 use App\User;
 use Dingo\Api\Exception\ResourceException;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class AuthenticateController extends Controller
      */
     public function authenticatedUser()
     {
-        return JWTAuth::parseToken()->authenticate();
+        return $this->item(JWTAuth::parseToken()->authenticate(),new UserTransformer);
     }
 
     /**
