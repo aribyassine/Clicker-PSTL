@@ -4,6 +4,7 @@ namespace App;
 
 use Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
@@ -37,6 +38,11 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
     }
 
+    public function ues()
+    {
+        return $this->belongsToMany(Ue::class);
+    }
+
     public static function createUserFromLDAP(\Adldap\Models\User $ldapUser, array $credentials): User
     {
         $name = explode(' ', $ldapUser->getCommonName());
@@ -53,5 +59,14 @@ class User extends Authenticatable
             $user->attachRole(Role::where('name', 'teacher')->firstOrFail());
 
         return $user;
+    }
+
+    /**
+     * autheticated user
+     *
+     * @return User
+     */
+    public static function authenticate(){
+        return JWTAuth::parseToken()->authenticate();
     }
 }

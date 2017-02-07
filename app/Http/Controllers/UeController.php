@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ue;
+use App\User;
 
 class UeController extends Controller {
 
@@ -13,7 +14,7 @@ class UeController extends Controller {
    */
   public function index()
   {
-
+      return $this->response->array(User::authenticate()->ues()->get());
   }
 
   /**

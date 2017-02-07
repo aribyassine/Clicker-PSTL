@@ -9,9 +9,9 @@ $api = app(Router::class);
 
 $api->version('v1', function (Router $api) {
 
-    $api->get('/ues', 'App\Http\Controllers\UeController@index');
+    $api->resource('ue', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
 
-    $api->post('/authenticate', 'App\Http\Controllers\AuthenticateController@authenticate');
+    $api->post('/auth', 'App\Http\Controllers\AuthenticateController@authenticate');
     $api->get('/token', 'App\Http\Controllers\AuthenticateController@getToken');
     $api->post('/logout', 'App\Http\Controllers\AuthenticateController@logout');
     // Authenticated only
@@ -20,12 +20,16 @@ $api->version('v1', function (Router $api) {
 
         // Authenticated student only
         $api->group(['middleware' => 'role:student'], function (Router $api) {
-            $api->get('/student',function (){return response()->json('student');});
+            $api->get('/student', function () {
+                return response()->json('student');
+            });
         });
 
         // Authenticated teacher only
         $api->group(['middleware' => 'role:teacher'], function (Router $api) {
-            $api->get('/teacher',function (){return response()->json('teacher');});
+            $api->get('/teacher', function () {
+                return response()->json('teacher');
+            });
         });
 
         $api->get('protected', function () {

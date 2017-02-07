@@ -2,8 +2,7 @@
 namespace App\Http\Controllers;
 
 use Adldap\Laravel\Facades\Adldap;
-use App\Http\Requests;
-use App\Requests\LoginRequest;
+use App\Http\Requests\LoginRequest;
 use App\Transformers\UserTransformer;
 use App\User;
 use Dingo\Api\Exception\ResourceException;
