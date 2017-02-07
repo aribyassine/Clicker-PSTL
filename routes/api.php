@@ -9,6 +9,8 @@ $api = app(Router::class);
 
 $api->version('v1', function (Router $api) {
 
+    $api->get('/ues', 'App\Http\Controllers\UeController@index');
+
     $api->post('/authenticate', 'App\Http\Controllers\AuthenticateController@authenticate');
     $api->get('/token', 'App\Http\Controllers\AuthenticateController@getToken');
     $api->post('/logout', 'App\Http\Controllers\AuthenticateController@logout');

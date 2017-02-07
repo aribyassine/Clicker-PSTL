@@ -23,3 +23,10 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'password' => Hash::make('password'),
     ];
 });
+$factory->define(App\Ue::class, function (Faker\Generator $faker) {
+
+    return [
+        'name' => $faker->sentence,
+        'code_ue' => $faker->regexify('^[1-5]I[0-9]{3}'),
+    ];
+});
