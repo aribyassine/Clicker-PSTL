@@ -14,7 +14,7 @@ $api->version('v1', function (Router $api) {
     $api->post('/logout', 'App\Http\Controllers\AuthenticateController@logout');
     // Authenticated only
     $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
-        $api->get('/authenticated_user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
+        $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
 
         // Authenticated student only
         $api->group(['middleware' => 'role:student'], function (Router $api) {

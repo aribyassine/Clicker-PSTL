@@ -18,12 +18,12 @@ class UserTransformer extends TransformerAbstract
     {
         $role = $user->roles()->first();
         return [
-            'id' => (int)$user->id,
+            'id' => $user->id,
             'username' => $user->username,
-            'lastName' => ucfirst($user->lastName),
-            'firstName' => ucfirst($user->firstName),
+            'lastName' => $user->lastName,
+            'firstName' => $user->firstName,
             'role' => [
-                'id' => (int)$role->id,
+                'id' => $role->id,
                 'name' => $role->name,
                 'display_name' => $role->display_name,
                 'description' => $role->description,
