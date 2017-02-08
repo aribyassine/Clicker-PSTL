@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UeStoreRequest;
 use App\Ue;
 use App\User;
+use Dingo\Api\Exception\ResourceException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 
 class UeController extends Controller
@@ -44,8 +46,9 @@ class UeController extends Controller
         $this->authorize('create', Ue::class);
         $params = $request->only(['code_ue','name']);
         try {
-            Ue::create($params);
-            return $this->response->created();
+            $ue = Ue::create($params);
+            User::authenticated()->ues()->attach($ue);
+            return $this->response->array($ue);
         }catch (QueryException $exception){
             $code = $params['code_ue'];
             throw new StoreResourceFailedException("$code : This ue already exists");
@@ -60,7 +63,14 @@ class UeController extends Controller
      */
     public function show($id)
     {
-
+        try {
+        $ue = Ue::findOrFail($id);
+        $ue->students = $ue->students()->get();
+        $ue->teachers = $ue->teachers()->get();
+        return $ue;
+        }catch (ModelNotFoundException $exception){
+            throw new ResourceException("Not found Ue with id $id");
+        }
     }
 
     /**
