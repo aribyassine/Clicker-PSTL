@@ -6,7 +6,7 @@ use App\User;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UeStoreRequest extends FormRequest
+class UeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

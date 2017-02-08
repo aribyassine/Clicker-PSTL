@@ -9,14 +9,14 @@ $api = app(Router::class);
 
 $api->version('v1', function (Router $api) {
 
-    $api->resource('ue', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-
     $api->post('/auth', 'App\Http\Controllers\AuthenticateController@authenticate');
     $api->get('/token', 'App\Http\Controllers\AuthenticateController@getToken');
     $api->post('/logout', 'App\Http\Controllers\AuthenticateController@logout');
     // Authenticated only
     $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
         $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
+
+        $api->resource('ue', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
 
         // Authenticated student only
         $api->group(['middleware' => 'role:student'], function (Router $api) {

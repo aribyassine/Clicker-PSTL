@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UeStoreRequest;
+use App\Http\Requests\UeRequest;
 use App\Ue;
 use App\User;
-use Dingo\Api\Exception\ResourceException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Response;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 
@@ -23,7 +23,7 @@ class UeController extends Controller
     {
         $myUes = User::authenticated()->ues()->get();
         $otherUes = Ue::whereNotIn('id', $myUes)->get();
-        return $this->response->array(['my_ues' => $myUes , 'other_ues' => $otherUes]);
+        return $this->response->array(['my_ues' => $myUes, 'other_ues' => $otherUes]);
     }
 
     /**
@@ -38,18 +38,18 @@ class UeController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param UeStoreRequest $request
+     * @param UeRequest $request
      * @return Response
      */
-    public function store(UeStoreRequest $request)
+    public function store(UeRequest $request)
     {
         $this->authorize('create', Ue::class);
-        $params = $request->only(['code_ue','name']);
+        $params = $request->only(['code_ue', 'name']);
         try {
             $ue = Ue::create($params);
             User::authenticated()->ues()->attach($ue);
             return $this->response->array($ue);
-        }catch (QueryException $exception){
+        } catch (QueryException $exception) {
             $code = $params['code_ue'];
             throw new StoreResourceFailedException("$code : This ue already exists");
         }
@@ -64,12 +64,12 @@ class UeController extends Controller
     public function show($id)
     {
         try {
-        $ue = Ue::findOrFail($id);
-        $ue->students = $ue->students()->get();
-        $ue->teachers = $ue->teachers()->get();
-        return $ue;
-        }catch (ModelNotFoundException $exception){
-            throw new ResourceException("Not found Ue with id $id");
+            $ue = Ue::findOrFail($id);
+            $ue->students = $ue->students()->select(['lastName', 'firstName'])->get();
+            $ue->teachers = $ue->teachers()->select(['lastName', 'firstName'])->get();
+            return $ue;
+        } catch (ModelNotFoundException $exception) {
+            abort(404,"Not found Ue with id $id");
         }
     }
 
@@ -88,11 +88,22 @@ class UeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int $id
+     * @param  UeRequest $request
      * @return Response
      */
-    public function update($id)
+    public function update($id , UeRequest $request)
     {
-
+        try {
+            $ue = Ue::findOrFail($id);
+            $this->authorize('update', $ue);
+            $params = $request->only(['code_ue', 'name']);
+            $ue->update($params);
+            return $ue;
+        } catch (AuthorizationException $exception) {
+            abort(403,"Access defined : you don't have ability to update the Ue with id $id");
+        }catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Ue with id $id");
+        }
     }
 
     /**
