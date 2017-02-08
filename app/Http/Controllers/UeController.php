@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UeStoreRequest;
 use App\Ue;
 use App\User;
 
@@ -14,7 +15,7 @@ class UeController extends Controller {
    */
   public function index()
   {
-      return $this->response->array(User::authenticate()->ues()->get());
+      return $this->response->array(User::authenticated()->ues()->get());
   }
 
   /**
@@ -32,9 +33,9 @@ class UeController extends Controller {
    *
    * @return Response
    */
-  public function store()
+  public function store(UeStoreRequest $request)
   {
-    
+    return $this->response->accepted();
   }
 
   /**
