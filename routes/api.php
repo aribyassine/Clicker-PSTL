@@ -16,7 +16,7 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
         $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
 
-        $api->resource('ue', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+        $api->resource('ues', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
 
         // Authenticated student only
         $api->group(['middleware' => 'role:student'], function (Router $api) {
