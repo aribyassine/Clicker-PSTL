@@ -69,7 +69,7 @@ class UeController extends Controller
             $ue->teachers = $ue->teachers()->select(['lastName', 'firstName'])->get();
             return $ue;
         } catch (ModelNotFoundException $exception) {
-            abort(404,"Not found Ue with id $id");
+            abort(404, "Not found Ue with id $id");
         }
     }
 
@@ -91,7 +91,7 @@ class UeController extends Controller
      * @param  UeRequest $request
      * @return Response
      */
-    public function update($id , UeRequest $request)
+    public function update($id, UeRequest $request)
     {
         try {
             $ue = Ue::findOrFail($id);
@@ -100,8 +100,8 @@ class UeController extends Controller
             $ue->update($params);
             return $ue;
         } catch (AuthorizationException $exception) {
-            abort(403,"Access defined : you don't have ability to update the Ue with id $id");
-        }catch (ModelNotFoundException $exception) {
+            abort(403, "Access defined : you don't have ability to update the Ue with id $id");
+        } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Ue with id $id");
         }
     }
@@ -114,7 +114,17 @@ class UeController extends Controller
      */
     public function destroy($id)
     {
-
+        try {
+            $ue = Ue::findOrFail($id);
+            $this->authorize('delete', $ue);
+            $ue->users()->detach(User::authenticated()->id);
+            if ($ue->teachers()->count() == 0)
+                $ue->delete();
+        } catch (AuthorizationException $exception) {
+            abort(403, "Access defined : you don't have ability to delete the Ue with id $id");
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Ue with id $id");
+        }
     }
 
 }
