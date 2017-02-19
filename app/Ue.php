@@ -29,4 +29,9 @@ class Ue extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function sessions()
+    {
+        return $this->hasMany(Session::class);
+    }
 }

@@ -14,10 +14,14 @@ $api->version('v1', function (Router $api) {
     $api->post('/logout', 'App\Http\Controllers\AuthenticateController@logout');
     // Authenticated only
     $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
+
+        $api->group(['middleware' => 'role:student'], function (Router $api) {
+            $api->post('ues/{id}/subscribe','App\Http\Controllers\UeController@subscribe');
+        });
+
         $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
 
         $api->resource('ues', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-
         // Authenticated student only
         $api->group(['middleware' => 'role:student'], function (Router $api) {
             $api->get('/student', function () {

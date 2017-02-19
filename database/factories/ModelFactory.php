@@ -30,3 +30,11 @@ $factory->define(App\Ue::class, function (Faker\Generator $faker) {
         'code_ue' => $faker->regexify('^[1-5]I[0-9]{3}'),
     ];
 });
+
+$factory->define(App\Session::class, function (Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->sentence,
+        'number' => $faker->numberBetween(1,10),
+    ];
+});
