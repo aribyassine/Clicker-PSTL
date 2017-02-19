@@ -84,9 +84,9 @@ class QuestionController extends Controller
     {
         try {
             $question = Question::findOrFail($question_id);
-            $this->authorize('update',$question);
+            $this->authorize('update', $question);
             $title = $request->get('title');
-            if($title != $question->title){
+            if ($title != $question->title) {
                 $question->update(['title' => $title]);
             }
             return $this->response->array($question);
@@ -107,8 +107,8 @@ class QuestionController extends Controller
             $question = Question::findOrFail($question_id);
             $this->authorize('delete', $question);
             $question->delete();
-            $nextQuestions = Question::where('number','>',$question->number)->get();
-            $nextQuestions->each(function (Question $quest){
+            $nextQuestions = Question::where('number', '>', $question->number)->get();
+            $nextQuestions->each(function (Question $quest) {
                 $quest->number--;
                 $quest->save();
             });

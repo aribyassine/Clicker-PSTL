@@ -8,7 +8,6 @@ use App\Policies\UePolicy;
 use App\Question;
 use App\Session;
 use App\Ue;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

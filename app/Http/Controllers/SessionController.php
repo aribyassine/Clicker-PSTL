@@ -74,15 +74,15 @@ class SessionController extends Controller
      * @param  int $session_id
      * @return \Illuminate\Http\Response
      */
-    public function update(SessionRequest $request,$session_id)
+    public function update(SessionRequest $request, $session_id)
     {
         try {
             $session = Session::findOrFail($session_id);
             $ue = $session->ue;
-            $this->authorize('update',$session);
+            $this->authorize('update', $session);
             $params = $request->only(['title', 'number']);
             if ($ue->sessions()->whereNumber($params['number'])->get()->isEmpty() || $params['number'] == $session->number) {
-               $session->update($params);
+                $session->update($params);
                 return $this->response->array($session);
             } else
                 throw new StoreResourceFailedException("This session number already exists");
@@ -98,7 +98,7 @@ class SessionController extends Controller
      * @param  int $session_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $session_id)
+    public function destroy($session_id)
     {
         try {
             //$ue = Ue::findOrFail($id);

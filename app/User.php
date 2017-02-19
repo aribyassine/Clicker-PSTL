@@ -66,7 +66,8 @@ class User extends Authenticatable
      *
      * @return User
      */
-    public static function authenticated(){
+    public static function authenticated()
+    {
         return JWTAuth::parseToken()->authenticate();
     }
 }

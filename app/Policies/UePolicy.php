@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Ue;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UePolicy
@@ -13,8 +13,8 @@ class UePolicy
     /**
      * Determine whether the user can view the ue.
      *
-     * @param  \App\User  $user
-     * @param  \App\Ue  $ue
+     * @param  \App\User $user
+     * @param  \App\Ue $ue
      * @return mixed
      */
     public function view(User $user, Ue $ue)
@@ -25,7 +25,7 @@ class UePolicy
     /**
      * Determine whether the user can create ues.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -36,8 +36,8 @@ class UePolicy
     /**
      * Determine whether the user can update the ue.
      *
-     * @param  \App\User  $user
-     * @param  \App\Ue  $ue
+     * @param  \App\User $user
+     * @param  \App\Ue $ue
      * @return mixed
      */
     public function update(User $user, Ue $ue)
@@ -48,8 +48,8 @@ class UePolicy
     /**
      * Determine whether the user can delete the ue.
      *
-     * @param  \App\User  $user
-     * @param  \App\Ue  $ue
+     * @param  \App\User $user
+     * @param  \App\Ue $ue
      * @return mixed
      */
     public function delete(User $user, Ue $ue)
