@@ -41,7 +41,7 @@ class UeRequest extends FormRequest
      */
     public function response(array $errors){
             throw new StoreResourceFailedException(
-                'Could not store the Ue, the given data failed to pass validation.',
+                'The given data failed to pass validation.',
                 $errors
             );
     }
