@@ -19,7 +19,7 @@ class UePolicy
      */
     public function view(User $user, Ue $ue)
     {
-        return true;
+        return $ue->teachers()->get()->contains($user);
     }
 
     /**
