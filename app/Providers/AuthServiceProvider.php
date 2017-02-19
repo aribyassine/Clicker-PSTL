@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Policies\QuestionPolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\UePolicy;
+use App\Question;
 use App\Session;
 use App\Ue;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Model' => 'App\Policies\ModelPolicy',
         Ue::class => UePolicy::class,
         Session::class => SessionPolicy::class,
+        Question::class => QuestionPolicy::class,
     ];
 
     /**

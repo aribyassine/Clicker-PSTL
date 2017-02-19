@@ -31,9 +31,9 @@ class SessionPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user,Ue $ue)
+    public function create(User $user,Session $session)
     {
-        return $ue->teachers()->get()->contains($user);
+        return $session->teacher  == $user;
     }
 
     /**

@@ -19,10 +19,22 @@ $api->version('v1', function (Router $api) {
             $api->post('ues/{id}/subscribe','App\Http\Controllers\UeController@subscribe');
         });
 
+        /*
+         * Session routes
+         */
         $api->get('ues/{ue_id}/sessions','App\Http\Controllers\SessionController@index');
         $api->post('ues/{ue_id}/sessions','App\Http\Controllers\SessionController@store');
         $api->match(['put','patch'],'sessions/{session_id}','App\Http\Controllers\SessionController@update');
         $api->delete('sessions/{session_id}','App\Http\Controllers\SessionController@destroy');
+
+        /**
+         * Question Routes
+         */
+        $api->get('sessions/{session_id}/questions','App\Http\Controllers\QuestionController@index');
+        $api->post('sessions/{session_id}/questions','App\Http\Controllers\QuestionController@store');
+        $api->match(['put','patch'],'questions/{question_id}','App\Http\Controllers\QuestionController@update');
+        $api->delete('questions/{question_id}','App\Http\Controllers\QuestionController@destroy');
+
 
         $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
 
