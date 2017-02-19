@@ -22,7 +22,7 @@ class Session extends Model {
 
 	public function questions()
 	{
-		return $this->hasMany('Question');
+		return $this->hasMany(Question::class);
 	}
 
 	public function students()

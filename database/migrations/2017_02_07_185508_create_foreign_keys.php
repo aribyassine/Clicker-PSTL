@@ -28,15 +28,16 @@ class CreateForeignKeys extends Migration {
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
+
+        Schema::table('questions', function(Blueprint $table) {
+            $table->foreign('session_id')->references('id')->on('sessions')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
 	}
 
 	public function down()
 	{
-		Schema::table('ue_user', function(Blueprint $table) {
-			$table->dropForeign('ue_user_user_id_foreign');
-		});
-		Schema::table('ue_user', function(Blueprint $table) {
-			$table->dropForeign('ue_user_ue_id_foreign');
-		});
+
 	}
 }

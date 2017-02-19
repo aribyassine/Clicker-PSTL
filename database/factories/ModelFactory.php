@@ -23,6 +23,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'password' => Hash::make('password'),
     ];
 });
+
 $factory->define(App\Ue::class, function (Faker\Generator $faker) {
 
     return [
@@ -36,5 +37,13 @@ $factory->define(App\Session::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence,
         'number' => $faker->numberBetween(1,10),
+    ];
+});
+
+$factory->define(App\Question::class, function (Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->sentence,
+        'number' => $faker->randomNumber(),
     ];
 });
