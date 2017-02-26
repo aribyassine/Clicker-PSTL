@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Session;
+use App\Ue;
 use App\User;
 use App\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -19,7 +21,7 @@ class ResponsePolicy
      */
     public function view(User $user, Response $response)
     {
-        //
+        return $response->question->session->teacher == $user;
     }
 
     /**
@@ -28,9 +30,8 @@ class ResponsePolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
-    {
-        //
+    public function create(User $user,Ue $ue)
+    {   return $user->hasRole('student') && $ue->students()->get()->contains($user);
     }
 
     /**
@@ -42,7 +43,7 @@ class ResponsePolicy
      */
     public function update(User $user, Response $response)
     {
-        //
+        return $response->user() == $user;
     }
 
     /**
@@ -54,6 +55,6 @@ class ResponsePolicy
      */
     public function delete(User $user, Response $response)
     {
-        //
+        return $response->user() == $user;
     }
 }

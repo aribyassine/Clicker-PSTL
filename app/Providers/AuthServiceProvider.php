@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Policies\PropositionPolicy;
 use App\Policies\QuestionPolicy;
+use App\Policies\ResponsePolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\UePolicy;
 use App\Proposition;
 use App\Question;
+use App\Response;
 use App\Session;
 use App\Ue;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         Session::class => SessionPolicy::class,
         Question::class => QuestionPolicy::class,
         Proposition::class => PropositionPolicy::class,
+        Response::class =>ResponsePolicy::class,
     ];
 
     /**

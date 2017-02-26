@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ResponseRequest extends FormRequest
@@ -13,7 +14,7 @@ class ResponseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return User::authenticated()->hasRole('student');
     }
 
     /**
