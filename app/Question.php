@@ -9,7 +9,7 @@ class Question extends Model
 
     protected $table = 'questions';
     public $timestamps = true;
-    protected $fillable = array('title', 'number');
+    protected $fillable = array('title', 'number','opened');
 
     public function propositions()
     {

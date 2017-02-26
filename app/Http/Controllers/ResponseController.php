@@ -21,7 +21,8 @@ class ResponseController extends Controller
     {
         try {
             $question = Question::findOrFail($question_id);
-            $this->authorize('view', $question);
+            if ($question->session->teacher != User::authenticated())
+                throw new AuthorizationException();
             return $question->responses()->get();
 
         } catch (AuthorizationException $exception) {
@@ -33,35 +34,44 @@ class ResponseController extends Controller
     }
 
 
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$question_id)
+    public function store(Request $request, $question_id)
     {
         try {
             $question = Question::findOrFail($question_id);
 
-            $this->authorize('create',[Response::class,$question->session->ue]);
-            $rep =$request->get('response');
-            $user =User::authenticated();
-            $reponse = new Response();
-            $reponse->question()->associate($question);
-            $reponse->user()->associate($user);
-            if(isset($rep)){
-                $reponse->answered=true;
-                //$reponse->response;
-            }else
-                $reponse->answered=false;
-
-
-
-
+            $this->authorize('create', [Response::class, $question->session->ue]);
+            //dd($request->get('response'));
+            $rep = $request->all();
+            //$rep = json_decode("[1:true,2:false,3:false]");
+            $user = User::authenticated();
+            if (in_array('true', $rep))
+                foreach ($rep as $key => $value) {
+                    $value = $value === 'true' ? true : false;
+                    if (is_numeric($key) && $value) {
+                        $reponse = new Response();
+                        $reponse->question()->associate($question);
+                        $reponse->user()->associate($user);
+                        $reponse->answered = true;
+                        $reponse->response = $key;
+                        $reponse->save();
+                    }
+                }
+            else {
+                $reponse = new Response();
+                $reponse->question()->associate($question);
+                $reponse->user()->associate($user);
+                $reponse->answered = false;
+                $reponse->save();
+            }
+            return $this->response->noContent();
         } catch (AuthorizationException $exception) {
-            abort(403, "Access defined : you don't have ability to see responses to the question with id $question_id");
+            abort(403, "Access defined : you don't have ability to create responses in the question with id : $question_id");
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Question with id $question_id");
         }

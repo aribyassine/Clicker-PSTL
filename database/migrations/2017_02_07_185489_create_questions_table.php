@@ -11,6 +11,7 @@ class CreateQuestionsTable extends Migration {
 			$table->increments('id');
 			$table->text('title');
 			$table->integer('number');
+			$table->boolean('opened');
 			$table->timestamps();
 			$table->integer('session_id')->unsigned();
 		});

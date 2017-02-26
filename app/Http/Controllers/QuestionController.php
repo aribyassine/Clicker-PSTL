@@ -110,4 +110,43 @@ class QuestionController extends Controller
             abort(404, "Not found Question with id $question_id");
         }
     }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $question_id
+     * @return QuestionRequest question
+     */
+    public function open(QuestionRequest $request ,$question_id){
+       try{
+           $question = Question::findOrFail($question_id);
+           $this->authorize('update',$question);
+           $question->update(['opened' => true]);
+           return $this->response->array($question);
+       } catch (AuthorizationException $exception) {
+           abort(403, "Access defined : you don't have ability to open the Question with id $question_id");
+       } catch (ModelNotFoundException $exception) {
+           abort(404, "Not found Question with id $question_id");
+       }
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $question_id
+     * @return QuestionRequest question
+     */
+    public function close(QuestionRequest $request ,$question_id){
+        try{
+            $question = Question::findOrFail($question_id);
+            $this->authorize('update',$question);
+            $question->update(['opened' => false]);
+            return $this->response->array($question);
+        } catch (AuthorizationException $exception) {
+            abort(403, "Access defined : you don't have ability to close the Question with id $question_id");
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Question with id $question_id");
+        }
+
+    }
 }

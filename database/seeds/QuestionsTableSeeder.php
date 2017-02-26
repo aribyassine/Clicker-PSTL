@@ -19,6 +19,7 @@ class QuestionsTableSeeder extends Seeder
                 $question = $questions->get($i-1);
                 $question->session()->associate($session);
                 $question->number = $i;
+                $question->opened = false;
                 $question->save();
             }
         });

@@ -31,7 +31,10 @@ $api->version('v1', function (Router $api) {
         $api->get('sessions/{session_id}/questions', 'App\Http\Controllers\QuestionController@index');
         $api->post('sessions/{session_id}/questions', 'App\Http\Controllers\QuestionController@store');
         $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@update');
+        $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@open');
+        $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@close');
         $api->delete('questions/{question_id}', 'App\Http\Controllers\QuestionController@destroy');
+
 
         /**
          * Proposition Routes
@@ -45,7 +48,7 @@ $api->version('v1', function (Router $api) {
          * Response Routes
          */
         $api->get('questions/{question_id}/responses', 'App\Http\Controllers\ResponseController@index');
-
+        $api->post('questions/{question_id}/responses', 'App\Http\Controllers\ResponseController@store');
         $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
         $api->resource('ues', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
         /*
