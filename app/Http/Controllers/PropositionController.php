@@ -19,8 +19,7 @@ class PropositionController extends Controller
     public function index($question_id)
     {
         try {
-            $question = Question::findOrFail($question_id);
-            return $question->propositions()->get();
+            return Question::with('propositions')->findOrFail($question_id);
         } catch (ModelNotFoundException $exeption) {
             abort(404, "Not found Question with id $question_id");
         }
