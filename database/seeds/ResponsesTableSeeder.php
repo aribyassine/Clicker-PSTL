@@ -27,9 +27,9 @@ class ResponsesTableSeeder extends Seeder
                         $response->question()->associate($question);
                         $response->user()->associate($student);
                         if (random_int(0, 4) == 0) {
-                            $response->answered = false;
+                            //$response->answered = false;
                         } else {
-                            $response->answered = true;
+                            //$response->answered = true;
                             $response->response = random_int(1, 3);
                         }
                         $response->save();

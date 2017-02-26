@@ -57,7 +57,7 @@ class ResponseController extends Controller
                         $reponse = new Response();
                         $reponse->question()->associate($question);
                         $reponse->user()->associate($user);
-                        $reponse->answered = true;
+                        //$reponse->answered = true;
                         $reponse->response = $key;
                         $reponse->save();
                     }
@@ -66,7 +66,7 @@ class ResponseController extends Controller
                 $reponse = new Response();
                 $reponse->question()->associate($question);
                 $reponse->user()->associate($user);
-                $reponse->answered = false;
+                //$reponse->answered = false;
                 $reponse->save();
             }
             return $this->response->noContent();
