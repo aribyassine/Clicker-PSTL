@@ -24,3 +24,4 @@ class QuestionsTableSeeder extends Seeder
         });
     }
 }
+

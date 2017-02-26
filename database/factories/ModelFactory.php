@@ -47,3 +47,11 @@ $factory->define(App\Question::class, function (Faker\Generator $faker) {
         'number' => $faker->randomNumber(),
     ];
 });
+$factory->define(App\Proposition::class, function (Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->sentence,
+        'number' => $faker->randomNumber(),
+        'verdict' => $faker->boolean,
+    ];
+});

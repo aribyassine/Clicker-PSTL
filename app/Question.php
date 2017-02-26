@@ -13,7 +13,7 @@ class Question extends Model
 
     public function propositions()
     {
-        return $this->hasMany('Proposition');
+        return $this->hasMany(Proposition::class);
     }
 
     public function session()
