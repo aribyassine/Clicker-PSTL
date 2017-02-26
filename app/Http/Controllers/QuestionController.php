@@ -18,8 +18,7 @@ class QuestionController extends Controller
     public function index($session_id)
     {
         try {
-            $session = Session::findORFail($session_id);
-            return $session->questions()->get();
+           return  Session::with('questions')->findORFail($session_id);
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Session with id $session_id");
         }
@@ -116,31 +115,14 @@ class QuestionController extends Controller
      * @param  int $question_id
      * @return QuestionRequest question
      */
-    public function open(QuestionRequest $request ,$question_id){
-       try{
-           $question = Question::findOrFail($question_id);
-           $this->authorize('update',$question);
-           $question->update(['opened' => true]);
-           return $this->response->array($question);
-       } catch (AuthorizationException $exception) {
-           abort(403, "Access defined : you don't have ability to open the Question with id $question_id");
-       } catch (ModelNotFoundException $exception) {
-           abort(404, "Not found Question with id $question_id");
-       }
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $question_id
-     * @return QuestionRequest question
-     */
-    public function close(QuestionRequest $request ,$question_id){
+    public function switchState($question_id){
         try{
             $question = Question::findOrFail($question_id);
             $this->authorize('update',$question);
-            $question->update(['opened' => false]);
+            if($question->opened == 0)
+                $question->update(['opened' => 1]);
+            else
+                $question->update(['opened' => 0]);
             return $this->response->array($question);
         } catch (AuthorizationException $exception) {
             abort(403, "Access defined : you don't have ability to close the Question with id $question_id");

@@ -31,8 +31,7 @@ $api->version('v1', function (Router $api) {
         $api->get('sessions/{session_id}/questions', 'App\Http\Controllers\QuestionController@index');
         $api->post('sessions/{session_id}/questions', 'App\Http\Controllers\QuestionController@store');
         $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@update');
-        $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@open');
-        $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@close');
+        $api->match(['put', 'patch'], 'questions/{question_id}', 'App\Http\Controllers\QuestionController@switchState');
         $api->delete('questions/{question_id}', 'App\Http\Controllers\QuestionController@destroy');
 
 

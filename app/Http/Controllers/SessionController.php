@@ -21,8 +21,7 @@ class SessionController extends Controller
     public function index($ue_id)
     {
         try {
-            $ue = Ue::findOrFail($ue_id);
-            return $ue->sessions()->get();
+            return Ue::with('sessions')->findOrFail($ue_id);
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Ue with id $ue_id");
         }
