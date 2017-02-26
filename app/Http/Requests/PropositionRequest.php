@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\User;
+use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PropositionRequest extends FormRequest
@@ -13,7 +15,7 @@ class PropositionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return User::authenticated()->hasRole('teacher');
     }
 
     /**
@@ -24,7 +26,14 @@ class PropositionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'required',
+            'verdict' =>'required|in:yes,no,true,false,0,1'
         ];
+    }
+    public function response(array $errors){
+        throw new StoreResourceFailedException(
+            'The given data failed to pass validation.',
+            $errors
+        );
     }
 }
