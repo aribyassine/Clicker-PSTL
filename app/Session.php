@@ -30,6 +30,11 @@ class Session extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    public function responses()
+    {
+        //TODO test
+        return $this->hasMany(Response::class,'session_user','session_user_id');
+    }
 
 
 }

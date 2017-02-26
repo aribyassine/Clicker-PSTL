@@ -40,6 +40,8 @@ $api->version('v1', function (Router $api) {
          */
         $api->get('questions/{question_id}/propositions','App\Http\Controllers\PropositionController@index');
         $api->post('questions/{session_id}/propositions','App\Http\Controllers\PropositionController@store');
+        $api->match(['put','patch'],'propositions/{id}','App\Http\Controllers\PropositionController@update');
+        $api->delete('propositions/{id}','App\Http\Controllers\PropositionController@destroy');
 
         $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
 

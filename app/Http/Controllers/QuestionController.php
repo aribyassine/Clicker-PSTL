@@ -62,16 +62,6 @@ class QuestionController extends Controller
         //TODO
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -112,8 +102,8 @@ class QuestionController extends Controller
                 $quest->number--;
                 $quest->save();
             });
-
             return $this->response->noContent();
+
         } catch (AuthorizationException $exception) {
             abort(403, "Access defined : you don't have ability to delete the Question with id $question_id");
         } catch (ModelNotFoundException $exception) {

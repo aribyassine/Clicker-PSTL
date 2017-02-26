@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PropositionRequest;
 use App\Proposition;
 use App\Question;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class PropositionController extends Controller
             $question = Question::findOrFail($question_id);
             return $question->propositions()->get();
         } catch (ModelNotFoundException $exeption) {
-            abort(404, "Not found Session with id $question_id");
+            abort(404, "Not found Question with id $question_id");
         }
     }
 
@@ -49,7 +50,7 @@ class PropositionController extends Controller
             $proposition->save();
             return $this->response->array($proposition);
         } catch (ModelNotFoundException $exception) {
-            abort(404, "Not found Session with id $question_id");
+            abort(404, "Not found Question with id $question_id");
         }
     }
 
@@ -61,30 +62,28 @@ class PropositionController extends Controller
      */
     public function show($id)
     {
-        //
+        //TODO
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  PropositionRequest $request
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PropositionRequest $request, $id)
     {
-        //
+        try {
+            $proposition = Proposition::findOrFail($id);
+            $this->authorize('update', $proposition);
+            $proposition->update($request->only(['title', 'verdict']));
+            return $this->response->array($proposition);
+
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Proposition with id $id");
+        }
     }
 
     /**
@@ -95,6 +94,21 @@ class PropositionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $proposition = Proposition::findOrFail($id);
+            $this->authorize('delete', $proposition);
+            $proposition->delete();
+            $nextPropositions = Proposition::where('number', '>', $proposition->number)->get();
+            $nextPropositions->each(function (Proposition $prop) {
+                $prop->number--;
+                $prop->save();
+            });
+            return $this->response->noContent();
+
+        } catch (AuthorizationException $exception) {
+            abort(403, "Access defined : you don't have ability to delete the Proposition with id $id");
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Proposition with id $id");
+        }
     }
 }
