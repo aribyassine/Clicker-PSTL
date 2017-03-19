@@ -7,7 +7,6 @@ use App\Proposition;
 use App\Question;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class PropositionController extends Controller
 {
@@ -19,7 +18,8 @@ class PropositionController extends Controller
     public function index($question_id)
     {
         try {
-            return Question::with('propositions')->findOrFail($question_id);
+            $questions = Question::with('propositions')->findOrFail($question_id);
+            return $this->response->array($questions);
         } catch (ModelNotFoundException $exeption) {
             abort(404, "Not found Question with id $question_id");
         }

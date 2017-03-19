@@ -18,7 +18,7 @@ class QuestionController extends Controller
     public function index($session_id)
     {
         try {
-           return  Session::with('questions')->findORFail($session_id);
+           return Session::with('questions')->findORFail($session_id);
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Session with id $session_id");
         }
@@ -36,11 +36,15 @@ class QuestionController extends Controller
         try {
             $session = Session::findOrFail($session_id);
             $this->authorize('create', [Question::class, $session]);
-            $title = $request->get('title');
+            //$q = $request->get('question');
+            $res='{"title":"saalimmmmmm","propositions": {"1":{"title":"kjhjghljkhjkhjk", "verdict":"true"}, "2":{"title": "mouloud", "verdict":"true"}}}';
+            $q=json_decode($res);
+            $propositions = get_object_vars($q->{"propositions"});
+            dd($propositions);
             $max = $session->questions()->get()->max('number');
             $question = new Question();
             $question->number = $max + 1;
-            $question->title = $title;
+            $question->title = $q->{"title"};
             $question->session()->associate($session);
             $question->save();
             return $this->response->array($question);

@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\GetUserFromToken;
 use App\Http\Middleware\RefreshToken;
+use Barryvdh\Cors\ServiceProvider;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Zizaco\Entrust\Middleware\EntrustAbility;
 use Zizaco\Entrust\Middleware\EntrustPermission;
@@ -64,5 +65,6 @@ class Kernel extends HttpKernel
         'role' => EntrustRole::class,
         'permission' => EntrustPermission::class,
         'ability' => EntrustAbility::class,
+        'cors' => ServiceProvider::class,
     );
 }

@@ -31,7 +31,7 @@ class ResponsePolicy
      * @return mixed
      */
     public function create(User $user,Ue $ue)
-    {   return $user->hasRole('student') && $ue->students()->get()->contains($user);
+    {   return $user->hasRole('student') && $ue->students()->get()->contains($user) || $ue->teachers()->get()->contains($user);
     }
 
     /**

@@ -14,7 +14,7 @@ class ResponseRequest extends FormRequest
      */
     public function authorize()
     {
-        return User::authenticated()->hasRole('student');
+        return true;
     }
 
     /**
