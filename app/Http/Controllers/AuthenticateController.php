@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Transformers\UserTransformer;
 use App\User;
 use Dingo\Api\Exception\ResourceException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -151,5 +152,20 @@ class AuthenticateController extends Controller
         }
         // all good so return the token
         return $this->response()->array(compact('token'));
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getRole($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            return $user->roles()->get()->first();
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found user with id $id");
+        }
     }
 }

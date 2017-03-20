@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Adldap\Exceptions\ModelNotFoundException;
+use App\Http\Requests\PropositionRequest;
 use App\Http\Requests\QuestionRequest;
+use App\Proposition;
 use App\Question;
 use App\Session;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
+use Validator;
 
 class QuestionController extends Controller
 {
@@ -18,7 +22,7 @@ class QuestionController extends Controller
     public function index($session_id)
     {
         try {
-           return Session::with('questions')->findORFail($session_id);
+            return Session::with('questions')->findORFail($session_id);
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Session with id $session_id");
         }
@@ -28,26 +32,43 @@ class QuestionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  QuestionRequest $request
+     * @param  Request $request
+     * @param  int $session_id
      * @return \Illuminate\Http\Response
      */
-    public function store(QuestionRequest $request, $session_id)
+    public function store(Request $request, $session_id)
     {
         try {
+            $inputData = $request->json()->all();
+            $validator = Validator::make($inputData, [
+                'title' => 'bail|required|min:1',
+                'propositions.*.title' => 'bail|required|min:1',
+                'propositions.*.verdict' => 'bail|required|boolean',
+            ]);
+            $validator->validate();
             $session = Session::findOrFail($session_id);
             $this->authorize('create', [Question::class, $session]);
-            //$q = $request->get('question');
-            $res='{"title":"saalimmmmmm","propositions": {"1":{"title":"kjhjghljkhjkhjk", "verdict":"true"}, "2":{"title": "mouloud", "verdict":"true"}}}';
-            $q=json_decode($res);
-            $propositions = get_object_vars($q->{"propositions"});
-            dd($propositions);
             $max = $session->questions()->get()->max('number');
             $question = new Question();
             $question->number = $max + 1;
-            $question->title = $q->{"title"};
+            $question->title = $inputData["title"];
+            $question->opened = false;
             $question->session()->associate($session);
             $question->save();
-            return $this->response->array($question);
+            foreach ($inputData["propositions"] as $key => $value) {
+                $this->authorize('create', [Proposition::class, $question->session]);
+                $proposition = new Proposition();
+                $proposition->title = $value['title'];
+                $verdict = $value['verdict'];
+                if (in_array($verdict, ['no', 'false', '0']))
+                    $proposition->verdict = false;
+                if (in_array($verdict, ['yes', 'true', '1']))
+                    $proposition->verdict = true;
+                $proposition->question()->associate($question);
+                $proposition->number = $max = $question->propositions()->get()->max('number') + 1;
+                $proposition->save();
+            }
+            return $this->response->noContent();
 
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Session with id $session_id");
@@ -113,17 +134,19 @@ class QuestionController extends Controller
             abort(404, "Not found Question with id $question_id");
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int $question_id
      * @return QuestionRequest question
      */
-    public function switchState($question_id){
-        try{
+    public function switchState($question_id)
+    {
+        try {
             $question = Question::findOrFail($question_id);
-            $this->authorize('update',$question);
-            if($question->opened == 0)
+            $this->authorize('update', $question);
+            if ($question->opened == 0)
                 $question->update(['opened' => 1]);
             else
                 $question->update(['opened' => 0]);

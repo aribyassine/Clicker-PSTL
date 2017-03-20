@@ -147,6 +147,25 @@ class UeController extends Controller
             abort(404, "Not found Ue with id $id");
         }
 
+    } /**
+     * Subscribe to the spicifed UE
+     *
+     * @param $id
+     * @return Response
+     */
+    public function unSubscribe($id)
+    {
+        try {
+            $ue = Ue::findOrFail($id);
+            $user = User::authenticated();
+            if (!($ue->students()->get()->contains($user->id)))
+                abort(403, 'not already subscribed');
+            $ue->users()->dettach($user->id);
+            return $this->response->noContent();
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Ue with id $id");
+        }
+
     }
 
 }

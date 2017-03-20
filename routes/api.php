@@ -16,8 +16,12 @@ $api->version('v1', function (Router $api) {
 
             $api->group(['middleware' => 'role:student'], function (Router $api) {
                 $api->post('ues/{id}/subscribe', 'App\Http\Controllers\UeController@subscribe');
+                $api->post('ues/{id}/Unsubscribe', 'App\Http\Controllers\UeController@Unsubscribe');
             });
-
+            /*
+             * Users routes
+             */
+            $api->get('users/{id}', 'App\Http\Controllers\AuthenticateController@getRole');
             /*
              * Session routes
              */
