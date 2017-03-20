@@ -68,7 +68,8 @@ class QuestionController extends Controller
                 $proposition->number = $max = $question->propositions()->get()->max('number') + 1;
                 $proposition->save();
             }
-            return $this->response->noContent();
+            $question->propositions = $question->propositions()->get();
+            return $this->response->array($question);
 
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Session with id $session_id");
