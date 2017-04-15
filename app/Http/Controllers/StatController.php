@@ -13,14 +13,18 @@ class StatController extends Controller
     public function question($id)
     {
         try {
-            $question = Question::with('propositions')->findOrfail($id);
-            $propositions = $question->propositions;
-            $responses = $question->responses()->get();
+            $question = Question::findOrFail($id);
+            $propositions = $question->propositions()->select(['id', 'verdict','number','title'])->get();
+            $responses = $question->responses()->select(['response', 'user_id'])->get();
 
             $user_rep = $responses->groupBy('user_id');
-            $tours_count = max($user_rep->map(function ($item) {
-                return $item->count();
-            })->values()->toArray());
+            try {
+                $tours_count = max($user_rep->map(function ($item) {
+                    return $item->count();
+                })->values()->toArray());
+            } catch (\Exception $e) {
+                $tours_count = 0;
+            }
             for ($i = 1; $i <= $tours_count; $i++) {
                 $tours[$i] = $user_rep->reduce(function ($carry, $item) use ($i) {
                     if (isset($item[$i - 1]))
@@ -28,30 +32,28 @@ class StatController extends Controller
                     return $carry;
                 }, []);
             }
-
-            /*            foreach ($responses as $response) {
-                            $user_rep = $responses->where('user_id', $response->user_id);
-                            $i = 0;
-                            foreach ($user_rep as $rep) {
-                                $i++;
-                                isset($tours[$i]) ? array_push($tours, $i ) : $tours[$i] = $rep;
-                            }
-                        }*/
-            foreach ($propositions as $proposition ){
-                $tour = [];
+            foreach ($propositions as $proposition) {
                 $proposition->stat = new Collection();
                 $proposition->stat["responses_count"] = $responses->where('response', $proposition->number)->count();
+            }
+
+            foreach ($propositions as $proposition) {
+                $tour = [];
                 foreach ($tours as $key => $value) {
+                    $responses = collect($value)->filter(function ($value) use ($proposition) {
+                        return $value->response == $proposition->number;
+                    });
                     $tour = array_add(
                         $tour,
                         $key,
-                        collect($value)->filter(function ($value) use ($proposition) {
-                            return $value->response == $proposition->number;
-                        })->count()
+                        ["users" => $responses->values()->map(function ($response) {
+                            return $response->user_id;
+                        }), "count" => $responses->count()]
                     );
                 }
                 $proposition->stat["tour"] = $tour;
             }
+            $question->propositions = $propositions;
             return $question;
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found question with id $id");
