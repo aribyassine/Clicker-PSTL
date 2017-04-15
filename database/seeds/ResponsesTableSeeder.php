@@ -23,16 +23,20 @@ class ResponsesTableSeeder extends Seeder
             $student->ues()->get()->each(function (Ue $ue) use ($student) {
                 $ue->sessions()->get()->each(function (Session $session) use ($student) {
                     $session->questions()->get()->each(function (Question $question) use ($student) {
-                        $response = new Response();
-                        $response->question()->associate($question);
-                        $response->user()->associate($student);
-                        if (random_int(0, 4) == 0) {
-                            //$response->answered = false;
-                        } else {
-                            //$response->answered = true;
+                        if (random_int(0, 4) != 0) {
+                            $response = new Response();
+                            $response->question()->associate($question);
+                            $response->user()->associate($student);
                             $response->response = random_int(1, 3);
+                            $response->save();
+                            if (random_int(0, 1) != 0) {
+                                $response = new Response();
+                                $response->question()->associate($question);
+                                $response->user()->associate($student);
+                                $response->response = random_int(1, 3);
+                                $response->save();
+                            }
                         }
-                        $response->save();
                     });
                 });
             });

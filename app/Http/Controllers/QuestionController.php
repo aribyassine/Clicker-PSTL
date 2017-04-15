@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Adldap\Exceptions\ModelNotFoundException;
-use App\Http\Requests\PropositionRequest;
 use App\Http\Requests\QuestionRequest;
 use App\Proposition;
 use App\Question;

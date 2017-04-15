@@ -68,7 +68,7 @@ class AuthenticateController extends Controller
      */
     public function authenticatedUser()
     {
-        return $this->item(JWTAuth::parseToken()->authenticate(),new UserTransformer);
+        return User::authenticated()->roles()->get()->first();
     }
 
     /**

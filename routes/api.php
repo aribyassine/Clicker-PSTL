@@ -19,10 +19,6 @@ $api->version('v1', function (Router $api) {
                 $api->post('ues/{id}/Unsubscribe', 'App\Http\Controllers\UeController@Unsubscribe');
             });
             /*
-             * Users routes
-             */
-            $api->get('users/{id}', 'App\Http\Controllers\AuthenticateController@getRole');
-            /*
              * Session routes
              */
             $api->get('ues/{ue_id}/sessions', 'App\Http\Controllers\SessionController@index');
@@ -53,8 +49,13 @@ $api->version('v1', function (Router $api) {
              */
             $api->get('questions/{question_id}/responses', 'App\Http\Controllers\ResponseController@index');
             $api->post('questions/{question_id}/responses', 'App\Http\Controllers\ResponseController@store');
-            $api->get('/user', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
+            $api->get('user/role', 'App\Http\Controllers\AuthenticateController@authenticatedUser');
             $api->resource('ues', 'App\Http\Controllers\UeController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+            /**
+             * Stat Routes
+             */
+            $api->get('stat/question/{id}', 'App\Http\Controllers\StatController@question');
+
             /*
             // Authenticated student only
             $api->group(['middleware' => 'role:student'], function (Router $api) {

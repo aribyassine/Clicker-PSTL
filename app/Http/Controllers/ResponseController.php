@@ -46,9 +46,7 @@ class ResponseController extends Controller
             $question = Question::findOrFail($question_id);
 
             $this->authorize('create', [Response::class, $question->session->ue]);
-            //dd($request->get('response'));
             $rep = $request->all();
-            //$rep = json_decode("[1:true,2:false,3:false]");
             $user = User::authenticated();
             if (in_array('true', $rep))
                 foreach ($rep as $key => $value) {
@@ -57,7 +55,6 @@ class ResponseController extends Controller
                         $reponse = new Response();
                         $reponse->question()->associate($question);
                         $reponse->user()->associate($user);
-                        //$reponse->answered = true;
                         $reponse->response = $key;
                         $reponse->save();
                     }
@@ -66,7 +63,6 @@ class ResponseController extends Controller
                 $reponse = new Response();
                 $reponse->question()->associate($question);
                 $reponse->user()->associate($user);
-                //$reponse->answered = false;
                 $reponse->save();
             }
             return $this->response->noContent();
