@@ -22,8 +22,8 @@ class StatController extends Controller
             $users_ids = $proposition_responses->map(function ($item, $key) {
                 return $item->user_id;
             })->values();
-            $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
             $proposition->stat["responses_count"] = $proposition_responses->count();
+            $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
         }
         $question->propositions = $propositions;
         return $question;
