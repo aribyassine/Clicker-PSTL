@@ -19,9 +19,7 @@ class StatController extends Controller
         foreach ($propositions as $proposition) {
             $proposition->stat = new Collection();
             $proposition_responses = $responses->where('response', $proposition->number);
-            $users_ids = $proposition_responses->map(function ($item, $key) {
-                return $item->user_id;
-            })->values();
+            $users_ids = $proposition_responses->pluck('user_id');
             $proposition->stat["responses_count"] = $proposition_responses->count();
             $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
         }

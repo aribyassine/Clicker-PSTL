@@ -7,6 +7,8 @@ use App\Http\Requests\QuestionRequest;
 use App\Proposition;
 use App\Question;
 use App\Session;
+use App\Ue;
+use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Validator;
@@ -73,6 +75,18 @@ class QuestionController extends Controller
         } catch (ModelNotFoundException $exception) {
             abort(404, "Not found Session with id $session_id");
         }
+    }
+
+
+    /**
+     * Display the open questions.
+     */
+    public function open()
+    {
+        return User::authenticated()->ues()->with(['sessions.questions' => function($query){
+            $query->where('opened',1);
+        }])->get();
+
     }
 
     /**

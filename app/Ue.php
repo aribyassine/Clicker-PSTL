@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ue extends Model
 {
-
+    protected $hidden = ['pivot'];
     protected $fillable = ['name', 'code_ue'];
 
     public function students()
@@ -33,5 +33,12 @@ class Ue extends Model
     public function sessions()
     {
         return $this->hasMany(Session::class);
+    }
+    /**
+     * Get all of the Question for the ue.
+     */
+    public function questions()
+    {
+        return $this->hasManyThrough(Question::class, Session::class);
     }
 }
