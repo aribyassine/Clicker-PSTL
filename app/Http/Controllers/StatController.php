@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Question;
+use App\User;
 use Illuminate\Support\Collection;
 
 class StatController extends Controller
@@ -10,7 +11,27 @@ class StatController extends Controller
     /**
      * @param $id
      */
-    public function question($id)
+    public function question($id){
+        $question = Question::findOrFail($id);
+        $propositions = $question->propositions()->select(['id', 'verdict','number','title'])->get();
+        $responses = $question->responses()->select(['response', 'user_id'])->get();
+
+        foreach ($propositions as $proposition) {
+            $proposition->stat = new Collection();
+            $proposition_responses = $responses->where('response', $proposition->number);
+            $users_ids = $proposition_responses->map(function ($item, $key) {
+                return $item->user_id;
+            })->values();
+            $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
+            $proposition->stat["responses_count"] = $proposition_responses->count();
+        }
+        $question->propositions = $propositions;
+        return $question;
+    }
+    /**
+     * @param $id
+     */
+    public function question_tour($id)
     {
         try {
             $question = Question::findOrFail($id);
