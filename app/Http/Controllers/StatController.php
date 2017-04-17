@@ -24,6 +24,7 @@ class StatController extends Controller
             $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
         }
         $question->propositions = $propositions;
+        // todo sans opinion
         return $question;
     }
     /**

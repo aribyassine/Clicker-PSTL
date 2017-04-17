@@ -7,7 +7,6 @@ use App\Http\Requests\QuestionRequest;
 use App\Proposition;
 use App\Question;
 use App\Session;
-use App\Ue;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -83,10 +82,20 @@ class QuestionController extends Controller
      */
     public function open()
     {
-        return User::authenticated()->ues()->with(['sessions.questions' => function($query){
-            $query->where('opened',1);
-        }])->get();
-
+        $ues = User::authenticated()->ues()->with(['sessions' => function ($query) {
+            $query->with(['questions'=>function ($query){
+                $query->where('opened',1);
+            }]);
+        }])->get()->transform( function ($ue, $key) {
+            $empty = $ue->sessions->filter(function ($session){ return $session->questions->count() == 0;});
+            foreach ($empty as $key => $value)
+                $ue->sessions->pull($key);
+            return $ue;
+        });
+        $empty_ues = $ues->filter(function ($ue){ return $ue->sessions->count() == 0;});
+        foreach ($empty_ues as $key => $value)
+            $ues->pull($key);
+        return $ues;
     }
 
     /**
