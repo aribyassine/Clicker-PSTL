@@ -17,7 +17,7 @@ class StatController extends Controller
         $question = Question::findOrFail($id);
         $propositions = $question->propositions()->select(['id', 'verdict','number','title'])->get();
         $responses = $question->responses()->select(['response', 'user_id'])->get();
-        $propositions->push(new Proposition(['title' => 'sans opignon','number'=>0,'verdict'=>0]));
+        $propositions->push(new Proposition(['title' => 'sans opinion','number'=>0,'verdict'=>0]));
 
         foreach ($propositions as $proposition) {
             $proposition->stat = new Collection();
