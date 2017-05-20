@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Question;
 use App\User;
+use App\Proposition;
+
 use Illuminate\Support\Collection;
 
 class StatController extends Controller
@@ -15,16 +17,23 @@ class StatController extends Controller
         $question = Question::findOrFail($id);
         $propositions = $question->propositions()->select(['id', 'verdict','number','title'])->get();
         $responses = $question->responses()->select(['response', 'user_id'])->get();
-        return collect($responses)->groupBy('user_id');
+        $propositions->push(new Proposition(['title' => 'sans opinion','number'=>0,'verdict'=>0]));
+
         foreach ($propositions as $proposition) {
             $proposition->stat = new Collection();
-            $proposition_responses = $responses->where('response', $proposition->number);
+            if (isset($proposition->id)) {
+                $proposition_responses = $responses->where('response', $proposition->number);
+            }else{
+                $proposition_responses = $responses->where('response',null);
+                //dd($proposition_responses);
+            }
             $users_ids = $proposition_responses->pluck('user_id');
             $proposition->stat["responses_count"] = $proposition_responses->count();
             $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
         }
         $question->propositions = $propositions;
         // todo sans opinion
+
         return $question;
     }
     /**
