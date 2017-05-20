@@ -86,7 +86,7 @@ class QuestionController extends Controller
             $query->with(['questions'=>function ($query){
                 $query->where('opened',1);
             }]);
-        }])->get()->transform( function ($ue, $key) {
+        }])->get()->transform( function ($ue) {
             $empty = $ue->sessions->filter(function ($session){ return $session->questions->count() == 0;});
             foreach ($empty as $key => $value)
                 $ue->sessions->pull($key);
