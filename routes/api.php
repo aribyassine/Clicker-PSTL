@@ -57,6 +57,7 @@ $api->version('v1', function (Router $api) {
              */
             $api->get('stat/question/{id}', 'App\Http\Controllers\StatController@question');
             $api->get('stat_tour/question/{id}', 'App\Http\Controllers\StatController@question_tour');
+            $api->get('ues/{ue_id}/students', 'App\Http\Controllers\UeController@students');
 
             /*
             // Authenticated student only
