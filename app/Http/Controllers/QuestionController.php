@@ -55,6 +55,13 @@ class QuestionController extends Controller
             $question->opened = false;
             $question->session()->associate($session);
             $question->save();
+            $count_true_propositions = 0;
+            foreach ($inputData["propositions"] as $key => $value) {
+                if (in_array($value['verdict'], ['yes', 'true', '1']))
+                    $count_true_propositions++;
+            }
+            if($count_true_propositions == 0)
+                abort(403, "At least, one proposition should be true");
             foreach ($inputData["propositions"] as $key => $value) {
                 $this->authorize('create', [Proposition::class, $question->session]);
                 $proposition = new Proposition();
