@@ -19,7 +19,10 @@ class StatController extends Controller
         $responses = $question->responses()->select(['response', 'user_id'])->get();
         $propositions->push(new Proposition(['title' => 'sans opinion','number'=>0,'verdict'=>0]));
 
+        $propositions_true_count = 0;
         foreach ($propositions as $proposition) {
+            if($proposition->verdict)
+                $propositions_true_count++;
             $proposition->stat = new Collection();
             if (isset($proposition->id)) {
                 $proposition_responses = $responses->where('response', $proposition->number);
@@ -31,9 +34,9 @@ class StatController extends Controller
             $proposition->stat["responses_count"] = $proposition_responses->count();
             $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
         }
+        $question->propositions_true_count = $propositions_true_count;
         $question->propositions = $propositions;
         // todo sans opinion
-
         return $question;
     }
     /**

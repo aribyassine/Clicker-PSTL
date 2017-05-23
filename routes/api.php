@@ -56,6 +56,7 @@ $api->version('v1', function (Router $api) {
              * Stat Routes
              */
             $api->get('stat/question/{id}', 'App\Http\Controllers\StatController@question');
+            $api->get('stat_tour/question/{id}', 'App\Http\Controllers\StatController@question_tour');
 
             /*
             // Authenticated student only
