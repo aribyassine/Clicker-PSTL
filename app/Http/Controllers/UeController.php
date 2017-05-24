@@ -168,6 +168,14 @@ class UeController extends Controller
 
     }
 
+    public function students($ue_id){
+        try {
+            return Ue::findOrFail($ue_id)->students()->get();
+        } catch (ModelNotFoundException $exception) {
+            abort(404, "Not found Ue with id $ue_id");
+        }
+    }
+
 }
 
 ?>

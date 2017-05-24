@@ -26,7 +26,7 @@ class QuestionRequest extends FormRequest
     public function rules()
     {
         return [
-            'question' => 'required',
+            'title' => 'required',
         ];
     }
     public function response(array $errors){

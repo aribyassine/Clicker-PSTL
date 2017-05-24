@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Proposition;
 use App\Question;
 use App\User;
-use App\Proposition;
-
 use Illuminate\Support\Collection;
 
 class StatController extends Controller
@@ -13,29 +12,33 @@ class StatController extends Controller
     /**
      * @param $id
      */
-    public function question($id){
+    public function question($id)
+    {
         $question = Question::findOrFail($id);
-        $propositions = $question->propositions()->select(['id', 'verdict','number','title'])->get();
+        $propositions = $question->propositions()->select(['id', 'verdict', 'number', 'title'])->get();
         $responses = $question->responses()->select(['response', 'user_id'])->get();
-        $propositions->push(new Proposition(['title' => 'sans opinion','number'=>0,'verdict'=>0]));
+        $propositions->push(new Proposition(['title' => 'sans opinion', 'number' => 0, 'verdict' => 0]));
 
+        $propositions_true_count = 0;
         foreach ($propositions as $proposition) {
+            if ($proposition->verdict)
+                $propositions_true_count++;
             $proposition->stat = new Collection();
             if (isset($proposition->id)) {
                 $proposition_responses = $responses->where('response', $proposition->number);
-            }else{
-                $proposition_responses = $responses->where('response',null);
-                //dd($proposition_responses);
+            } else {
+                $proposition_responses = $responses->where('response', null);
             }
             $users_ids = $proposition_responses->pluck('user_id');
             $proposition->stat["responses_count"] = $proposition_responses->count();
             $proposition->stat["users"] = User::select(['id', 'firstName', 'lastName', 'username'])->find($users_ids->toArray());
         }
+        $question->propositions_true_count = $propositions_true_count;
         $question->propositions = $propositions;
         // todo sans opinion
-
         return $question;
     }
+
     /**
      * @param $id
      */
@@ -43,7 +46,7 @@ class StatController extends Controller
     {
         try {
             $question = Question::findOrFail($id);
-            $propositions = $question->propositions()->select(['id', 'verdict','number','title'])->get();
+            $propositions = $question->propositions()->select(['id', 'verdict', 'number', 'title'])->get();
             $responses = $question->responses()->select(['response', 'user_id'])->get();
 
             $user_rep = $responses->groupBy('user_id');
@@ -61,7 +64,10 @@ class StatController extends Controller
                     return $carry;
                 }, []);
             }
+            $propositions_true_count = 0;
             foreach ($propositions as $proposition) {
+                if ($proposition->verdict)
+                    $propositions_true_count++;
                 $proposition->stat = new Collection();
                 $proposition->stat["responses_count"] = $responses->where('response', $proposition->number)->count();
             }
@@ -75,13 +81,20 @@ class StatController extends Controller
                     $tour = array_add(
                         $tour,
                         $key,
-                        ["users" => $responses->values()->map(function ($response) {
-                            return $response->user_id;
-                        }), "count" => $responses->count()]
+                        ["users" =>
+                            User::select(['id', 'firstName', 'lastName', 'username'])
+                                ->find($responses->values()->map(function ($response) {
+                                    return $response->user_id;
+                                })->toArray())
+                            ,
+                            "count" => $responses->count()
+                        ]
                     );
                 }
+
                 $proposition->stat["tour"] = $tour;
             }
+            $question->propositions_true_count = $propositions_true_count;
             $question->propositions = $propositions;
             return $question;
         } catch (ModelNotFoundException $exception) {
